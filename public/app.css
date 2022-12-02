@@ -1,0 +1,36 @@
+/* malinacss:D:/Documents/2022B/GIT/@esbuild-autoroute-template/src/App.malina.css */
+* {
+  font-family: system-ui;
+  line-height: 1.5;
+}
+div {
+  display: flex;
+  padding: 1em 0;
+  gap: 2em;
+}
+aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 10em;
+  padding: 1em;
+  border-right: 3px solid #ddd;
+}
+a {
+  text-decoration: none;
+  color: #000;
+}
+a:hover {
+  color: orange;
+}
+main {
+  flex: 1;
+}
+h1 {
+  text-transform: uppercase;
+  font-size: 4em;
+  font-weight: 200;
+  line-height: 1;
+  margin: 0;
+  color: orangered;
+}

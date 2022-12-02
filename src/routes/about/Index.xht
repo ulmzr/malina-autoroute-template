@@ -1,0 +1,11 @@
+<script>
+	export let params = {};
+	let slug;
+	$: params, slug = params.slug;
+</script>
+
+{#if slug}
+	<Slug/>
+{:else}
+	<Page/>
+{/if}
