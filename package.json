@@ -1,19 +1,21 @@
 {
-   "name": "malina-app",
-   "version": "1.0.0",
+   "name": "malinajs-autoroute",
+   "version": "0.0.1",
+   "description": "",
+   "main": "index.js",
    "scripts": {
-      "build": "node malina-esbuild",
-      "dev": "node malina-esbuild -w",
-      "start": "npx derver --production public",
-      "surge": "cd public && npx surge"
+      "build": "node node_modules/malinajs/malina-esbuild",
+      "dev": "node node_modules/malinajs/malina-esbuild -w"
    },
-   "license": "MIT",
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
    "devDependencies": {
-      "chokidar": "^3.5.3",
       "derver": "^0.5.3",
-      "esbuild": "^0.15.16",
-      "esbuild-plugin-alias": "^0.2.1",
+      "esbuild": "^0.15.18",
       "malinajs": "^0.6.x",
-      "malinajs-router": "^0.1.9"
+      "malinajs-router": "^0.1.9",
+      "path": "^0.12.7",
+      "sass": "^1.56.1"
    }
 }

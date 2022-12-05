@@ -1,24 +1,44 @@
 const fs = require('fs');
 const path = require('path');
+const sassPlugin = require('malinajs/plugins/sass.js');
 
-require('./autoroute')(process.argv.includes('-w'));
+const watch = process.argv.includes('-w') ? (process.env.WATCH = 1) : null;
+
+if (watch) require('./routes');
 
 module.exports = function (option, filename) {
-   let dirname = filename.replace(/[^\\\/]+$/, '');
+   const dirname = filename.replace(/[^\\\/]+$/, '');
    option.hideLabel = true;
    option.css = false;
-   option.extension = ['html', 'ma', 'xht', 'svg'];
+   option.passClass = false;
+   option.immutable = true;
+   option.plugins = [sassPlugin()];
    option.autoimport = (name) => {
-      let search = [
-         `./${name}.xht`,
-         `../${name}.xht`,
+      const lists = [
+         `${name}.xht`,
          `components/${name}.xht`,
-         `routes/${name}.xht`,
-         `modules/${name}.xht`,
+         `routes/@modules/${name}.xht`,
       ];
-      for (let i = 0; i < search.length; i++)
-         if (fs.existsSync(path.join(dirname, search[i])))
-            return `import ${name} from '${search[i]}';`;
+
+      let found = '';
+
+      for (let j = 0; j < lists.length; j++) {
+         let list = lists[j];
+         let prefix = '';
+         let search = './' + list;
+         for (let i = 0; i < 7; i++) {
+            let target = path.join(dirname, search);
+            if (fs.existsSync(target)) {
+               found = `import ${name} from '${search}';`;
+               break;
+            }
+            prefix += '../';
+            search = prefix + list;
+         }
+         if (found) break;
+      }
+      return found;
    };
+
    return option;
 };

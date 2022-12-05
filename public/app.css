@@ -1,36 +1,26 @@
-/* malinacss:D:/Documents/2022B/GIT/@esbuild-autoroute-template/src/App.malina.css */
+/* malinacss:D:/Documents/2022B/GIT/autoroute/src/routes/index.malina.css */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
 * {
+  margin: 0;
+}
+body {
   font-family: system-ui;
   line-height: 1.5;
 }
-div {
-  display: flex;
-  padding: 1em 0;
-  gap: 2em;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.125;
 }
-aside {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: 10em;
-  padding: 1em;
-  border-right: 3px solid #ddd;
-}
-a {
-  text-decoration: none;
-  color: #000;
-}
-a:hover {
-  color: orange;
-}
-main {
-  flex: 1;
-}
-h1 {
-  text-transform: uppercase;
-  font-size: 4em;
-  font-weight: 200;
-  line-height: 1;
-  margin: 0;
-  color: orangered;
+:is(h1, h2, h3, h4, h5, h6) > * {
+  display: block;
+  margin-top: .125em;
+  font-size: .5em;
 }

@@ -20,6 +20,9 @@
     cd.watchers.push(w2);
     return w2;
   }
+  function $watchReadOnly(cd, fn, callback) {
+    return $watch(cd, fn, callback, { ro: true });
+  }
   function cd_onDestroy(cd, fn) {
     if (fn)
       cd._d.push(fn);
@@ -350,6 +353,11 @@
       }
     });
   };
+  var bindText = (cd, element, fn) => {
+    $watchReadOnly(cd, () => "" + fn(), (value) => {
+      element.textContent = value;
+    });
+  };
   var attachSlot = ($context2, $cd, slotName, label, props, placeholder, cmp) => {
     let $slot = $cd.$$.$option.slots?.[slotName];
     if ($slot) {
@@ -562,12 +570,12 @@
             url: () => route.meta.url,
             query: () => route.meta.query,
             params: () => route.meta.params
-          }, null, $$compareDeep);
+          });
         }
       );
       $watch($cd, () => path, () => {
         route.makePattern(path);
-      }, { cmp: $$deepComparator(0) });
+      });
       prefixPush($cd, () => {
         route.redirect = redirect;
       });
@@ -575,32 +583,43 @@
     }
   }, $base);
 
-  // src/routes/Index.xht
-  var Index_default = ($element, $option = {}) => {
+  // src/routes/index.xht
+  var routes_default = ($element, $option = {}) => {
     {
-      const $parentElement = $$htmlToFragmentClean(`<h1>Home</h1> <p>I am home again.</p>`);
+      const $parentElement = $$htmlToFragmentClean(`<center> <h1> Homepage <p>About homepage</p> </h1> </center>`);
+      $insertElementByOption($element, $option, $parentElement);
+    }
+  };
+
+  // src/routes/@modules/E404.xht
+  var E404_default = ($element, $option = {}) => {
+    {
+      const $parentElement = $$htmlToFragmentClean(`<center> <h1>404</h1> <p>FILE NOT FOUND</p> </center>`);
       $insertElementByOption($element, $option, $parentElement);
     }
   };
 
   // src/routes/about/Slug.xht
-  var Slug_default = ($element, $option = {}) => {
+  var Slug_default = makeComponent(($option, $$apply) => {
+    const $component = current_component;
+    let $props = $option.props || {};
+    let { slug } = $props;
+    current_component.push = () => ({ slug = slug } = $props = $option.props || {});
+    current_component.exportedProps = () => ({ slug });
     {
-      const $parentElement = $$htmlToFragmentClean(`<h1>About-slug title</h1> <p>Content of About-Slug</p>`);
-      $insertElementByOption($element, $option, $parentElement);
+      let $cd = $component.$cd;
+      const $parentElement = $$htmlToFragmentClean(`<h2> About <sub> </sub> </h2> <br/>`);
+      let el0 = $parentElement[firstChild][childNodes][1][firstChild];
+      bindText($cd, el0, () => `Content of slug=` + slug + ` serve on /about/Slug.xht.`);
+      $watch($cd, () => slug, () => {
+        console.log(slug);
+      });
+      return $parentElement;
     }
-  };
+  }, $base);
 
-  // src/routes/about/Page.xht
-  var Page_default = ($element, $option = {}) => {
-    {
-      const $parentElement = $$htmlToFragmentClean(`<h1>About-page title</h1> <p>Content of About-Page</p>`);
-      $insertElementByOption($element, $option, $parentElement);
-    }
-  };
-
-  // src/routes/about/Index.xht
-  var Index_default2 = makeComponent(($option, $$apply) => {
+  // src/routes/about/+index.xht
+  var index_default = makeComponent(($option, $$apply) => {
     const $component = current_component;
     let $props = $option.props || {};
     const $context2 = $context;
@@ -610,48 +629,54 @@
     let slug;
     {
       let $cd = $component.$cd;
-      const $parentElement = $$htmlToFragmentClean(`<>`);
-      let el2 = $parentElement[firstChild];
+      const $parentElement = $$htmlToFragmentClean(`<h2> About <sub>Content of About serve on /about/+index.xht.</sub> </h2> <br/> <>`);
+      let el1 = $parentElement[childNodes][4];
       $$ifBlock(
         $cd,
-        el2,
+        el1,
         () => !!slug,
         $$htmlToFragmentClean(` <> `),
         ($cd2, $parentElement2) => {
           let el0 = $parentElement2[childNodes][1];
-          callComponent($cd2, $context2, Slug_default, el0, {});
-        },
-        $$htmlToFragmentClean(` <> `),
-        ($cd2, $parentElement2) => {
-          let el1 = $parentElement2[childNodes][1];
-          callComponent($cd2, $context2, Page_default, el1, {});
+          callComponent(
+            $cd2,
+            $context2,
+            Slug_default,
+            el0,
+            {},
+            () => ({ slug }),
+            keyComparator
+          );
         }
       );
       $watch($cd, () => params, () => {
         slug = params.slug;
-      }, { cmp: $$deepComparator(0) });
+      });
       return $parentElement;
     }
   }, $base);
 
-  // src/routes/contact/Slug.xht
-  var Slug_default2 = ($element, $option = {}) => {
+  // src/routes/about/book/Slug.xht
+  var Slug_default2 = makeComponent(($option, $$apply) => {
+    const $component = current_component;
+    let $props = $option.props || {};
+    let { slug } = $props;
+    current_component.push = () => ({ slug = slug } = $props = $option.props || {});
+    current_component.exportedProps = () => ({ slug });
     {
-      const $parentElement = $$htmlToFragmentClean(`<h1>Contact-slug title</h1> <p>Content of Contact-Slug</p>`);
-      $insertElementByOption($element, $option, $parentElement);
+      let $cd = $component.$cd;
+      const $parentElement = $$htmlToFragmentClean(`<h2> Book <sub> </sub> </h2> <br/>`);
+      let el0 = $parentElement[firstChild][childNodes][1][firstChild];
+      bindText($cd, el0, () => `Content of slug=` + slug + ` serve on /about/book/Slug.xht.`);
+      $watch($cd, () => slug, () => {
+        console.log(slug);
+      });
+      return $parentElement;
     }
-  };
+  }, $base);
 
-  // src/routes/contact/Page.xht
-  var Page_default2 = ($element, $option = {}) => {
-    {
-      const $parentElement = $$htmlToFragmentClean(`<h1>Contact-page title</h1> <p>Content of Contact-Page</p>`);
-      $insertElementByOption($element, $option, $parentElement);
-    }
-  };
-
-  // src/routes/contact/Index.xht
-  var Index_default3 = makeComponent(($option, $$apply) => {
+  // src/routes/about/book/+index.xht
+  var index_default2 = makeComponent(($option, $$apply) => {
     const $component = current_component;
     let $props = $option.props || {};
     const $context2 = $context;
@@ -661,37 +686,32 @@
     let slug;
     {
       let $cd = $component.$cd;
-      const $parentElement = $$htmlToFragmentClean(`<>`);
-      let el2 = $parentElement[firstChild];
+      const $parentElement = $$htmlToFragmentClean(`<h2> Book <sub>Content of Book serve on /about/book/+index.xht.</sub> </h2> <br/> <>`);
+      let el1 = $parentElement[childNodes][4];
       $$ifBlock(
         $cd,
-        el2,
+        el1,
         () => !!slug,
         $$htmlToFragmentClean(` <> `),
         ($cd2, $parentElement2) => {
           let el0 = $parentElement2[childNodes][1];
-          callComponent($cd2, $context2, Slug_default2, el0, {});
-        },
-        $$htmlToFragmentClean(` <> `),
-        ($cd2, $parentElement2) => {
-          let el1 = $parentElement2[childNodes][1];
-          callComponent($cd2, $context2, Page_default2, el1, {});
+          callComponent(
+            $cd2,
+            $context2,
+            Slug_default2,
+            el0,
+            {},
+            () => ({ slug }),
+            keyComparator
+          );
         }
       );
       $watch($cd, () => params, () => {
         slug = params.slug;
-      }, { cmp: $$deepComparator(0) });
+      });
       return $parentElement;
     }
   }, $base);
-
-  // src/modules/E404.xht
-  var E404_default = ($element, $option = {}) => {
-    {
-      const $parentElement = $$htmlToFragmentClean(`<h1>404</h1> <p>PAGE NOT FOUND</p>`);
-      $insertElementByOption($element, $option, $parentElement);
-    }
-  };
 
   // src/Router.xht
   var Router_default = makeComponent(($option, $$apply) => {
@@ -704,19 +724,19 @@
       {
         let slots = {};
         slots.default = makeSlot($cd, ($cd2, $context3, $instance_Route) => {
-          let $parentElement2 = $$htmlToFragmentClean(`<><><><><><>`);
+          let $parentElement2 = $$htmlToFragmentClean(`<> <> <> <> <> <>`);
           let el1 = $parentElement2[firstChild];
-          let el3 = $parentElement2[childNodes][1];
-          let el5 = $parentElement2[childNodes][2];
-          let el7 = $parentElement2[childNodes][3];
-          let el9 = $parentElement2[childNodes][4];
-          let el11 = $parentElement2[childNodes][5];
+          let el3 = $parentElement2[childNodes][2];
+          let el5 = $parentElement2[childNodes][4];
+          let el7 = $parentElement2[childNodes][6];
+          let el9 = $parentElement2[childNodes][8];
+          let el11 = $parentElement2[childNodes][10];
           {
             let slots2 = {};
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2) => {
               let $parentElement3 = $$htmlToFragmentClean(`<>`);
               let el0 = $parentElement3[firstChild];
-              callComponent($cd3, $context4, Index_default, el0, {});
+              callComponent($cd3, $context4, routes_default, el0, {});
               return $parentElement3;
             });
             callComponent($cd2, $context3, Route_default, el1, { slots: slots2, props: { path: `/` } });
@@ -726,7 +746,7 @@
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2) => {
               let $parentElement3 = $$htmlToFragmentClean(`<>`);
               let el2 = $parentElement3[firstChild];
-              callComponent($cd3, $context4, Index_default2, el2, {});
+              callComponent($cd3, $context4, index_default, el2, {});
               return $parentElement3;
             });
             callComponent($cd2, $context3, Route_default, el3, { slots: slots2, props: { path: `/about` } });
@@ -734,18 +754,18 @@
           {
             let slots2 = {};
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2, props) => {
-              let $parentElement3 = $$htmlToFragmentClean(`<>`);
+              let $parentElement3 = $$htmlToFragmentClean(` <> `);
               let { params } = props;
               let push = () => ({ params } = props, $$apply());
-              let el4 = $parentElement3[firstChild];
+              let el4 = $parentElement3[childNodes][1];
               callComponent(
                 $cd3,
                 $context4,
-                Index_default2,
+                index_default,
                 el4,
                 {},
                 () => ({ params }),
-                $$compareDeep
+                keyComparator
               );
               return { push, el: $parentElement3 };
             });
@@ -756,30 +776,30 @@
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2) => {
               let $parentElement3 = $$htmlToFragmentClean(`<>`);
               let el6 = $parentElement3[firstChild];
-              callComponent($cd3, $context4, Index_default3, el6, {});
+              callComponent($cd3, $context4, index_default2, el6, {});
               return $parentElement3;
             });
-            callComponent($cd2, $context3, Route_default, el7, { slots: slots2, props: { path: `/contact` } });
+            callComponent($cd2, $context3, Route_default, el7, { slots: slots2, props: { path: `/about/book` } });
           }
           {
             let slots2 = {};
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2, props) => {
-              let $parentElement3 = $$htmlToFragmentClean(`<>`);
+              let $parentElement3 = $$htmlToFragmentClean(` <> `);
               let { params } = props;
               let push = () => ({ params } = props, $$apply());
-              let el8 = $parentElement3[firstChild];
+              let el8 = $parentElement3[childNodes][1];
               callComponent(
                 $cd3,
                 $context4,
-                Index_default3,
+                index_default2,
                 el8,
                 {},
                 () => ({ params }),
-                $$compareDeep
+                keyComparator
               );
               return { push, el: $parentElement3 };
             });
-            callComponent($cd2, $context3, Route_default, el9, { slots: slots2, props: { path: `/contact/:slug` } });
+            callComponent($cd2, $context3, Route_default, el9, { slots: slots2, props: { path: `/about/book/:slug` } });
           }
           {
             let slots2 = {};
@@ -805,8 +825,8 @@
     const $context2 = $context;
     {
       let $cd = $component.$cd;
-      const $parentElement = $$htmlToFragmentClean(`<div><aside> <a href="/">Home</a> <a href="/about">About</a> <a href="/about/slug">about/slug</a> <a href="/contact">Contact</a> <a href="/contact/slug">contact/slug</a> <a href="/noroute">Fallback 404</a> </aside> <main> <> </main></div>`);
-      let el0 = $parentElement[firstChild][childNodes][2][childNodes][1];
+      const $parentElement = $$htmlToFragmentClean(`<>`);
+      let el0 = $parentElement[firstChild];
       callComponent($cd, $context2, Router_default, el0, {});
       return $parentElement;
     }
