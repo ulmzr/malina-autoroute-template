@@ -8,8 +8,8 @@ let baseDir,
 let tpl,
    routerTemplate = `<script>
 \timport {Route} from "malinajs-router";\n
-\timport Home from "./${routes}/index.xht";
-\timport E404 from "./${routes}/@modules/E404.xht";
+\timport Home from "./${routes}/+page.xht";
+\timport E404 from "./modules/E404.xht";
 \t<1>
 </script>\n
 <Route>
@@ -97,70 +97,65 @@ function writeFile(filename, content = '') {
 }
 
 function init() {
-   console.log('Start watching...');
    tpl = routerTemplate;
    baseDir = base;
-   [(routes, 'routes/@modules')].map((dir) => {
-      dir = path.join(baseDir, 'src', dir);
-      let indexFilename = path.join(dir, '/index.xht');
-      let e404Filename = path.join(dir, '/E404.xht');
+   let routes = path.join(baseDir, 'src/routes');
+   let modules = path.join(baseDir, 'src/modules');
+   let indexFilename = path.join(routes, '+page.xht');
+   let e404Filename = path.join(modules, 'E404.xht');
 
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+   if (!fs.existsSync(routes)) fs.mkdirSync(routes);
+   if (!fs.existsSync(modules)) fs.mkdirSync(modules);
 
-      if (!fs.existsSync(indexFilename))
-         if (!dir.includes('@modules'))
-            writeFile(indexFilename, routesIndexTemplate);
+   if (!fs.existsSync(indexFilename))
+      writeFile(indexFilename, routesIndexTemplate);
 
-      if (!fs.existsSync(e404Filename))
-         if (dir.includes('@modules')) writeFile(e404Filename, e404Template);
-   });
-   baseDir = path.join(baseDir, 'src', routes);
+   if (!fs.existsSync(e404Filename)) writeFile(e404Filename, e404Template);
+
+   baseDir = routes;
    traverseDir(baseDir);
+
    tpl = tpl.replace('<1>', '').replace('<2>', '');
    writeFile(path.join(baseDir, '../Router.xht'), tpl);
 }
 
-async function traverseDir(dir) {
+function traverseDir(dir) {
    fs.readdirSync(dir).forEach((file) => {
       let searchPath = path.join(dir, file);
 
       if (fs.lstatSync(searchPath).isDirectory()) {
-         let indexFilename = path.join(searchPath, '/+index.xht');
+         let indexFilename = path.join(searchPath, '/+page.xht');
          let slugFilename = path.join(searchPath, '/Slug.xht');
 
-         if (!indexFilename.includes('@modules')) {
-            let location = searchPath.replaceAll('\\', '/').split('routes')[1];
-            if (!fs.existsSync(indexFilename))
-               writeFile(
-                  indexFilename,
-                  pageTemplate
-                     .replaceAll('title', caps(file))
-                     .replaceAll('location', location + '/+index.xht')
-               );
-            if (!fs.existsSync(slugFilename))
-               writeFile(
-                  slugFilename,
-                  slugTemplate
-                     .replaceAll('title', caps(file))
-                     .replaceAll('location', location + '/Slug.xht')
-               );
-         }
+         let location = searchPath.replaceAll('\\', '/').split('routes')[1];
+         if (!fs.existsSync(indexFilename))
+            writeFile(
+               indexFilename,
+               pageTemplate
+                  .replaceAll('title', caps(file))
+                  .replaceAll('location', location + '/+page.xht')
+            );
+         if (!fs.existsSync(slugFilename))
+            writeFile(
+               slugFilename,
+               slugTemplate
+                  .replaceAll('title', caps(file))
+                  .replaceAll('location', location + '/Slug.xht')
+            );
 
-         if (!file.includes('@')) {
-            let cmpPath = searchPath.split(`${routes}`)[1].replace(/\\/g, '/');
-            let declaration = `import ${caps(file)} from "./routes${
-               (path.join, cmpPath)
-            }/+index.xht";\n\t<1>`;
-            let routePage = `<Route path="${cmpPath}">\n\t\t<${caps(
-               file
-            )}/>\n\t</>\n\t<2>`;
-            let routeSlug = `<Route path="${cmpPath}/:slug">\n\t\t{#slot params}\n\t\t\t<${caps(
-               file
-            )} {params}/>\n\t\t{/slot}\n\t</>\n\t<2>`;
-            tpl = tpl.replace('<1>', declaration);
-            tpl = tpl.replace('<2>', routePage);
-            tpl = tpl.replace('<2>', routeSlug);
-         }
+         let cmpPath = searchPath.split(`${routes}`)[1].replace(/\\/g, '/');
+         let declaration = `import ${caps(file)} from "./routes${
+            (path.join, cmpPath)
+         }/+page.xht";\n\t<1>`;
+         let routePage = `<Route path="${cmpPath}">\n\t\t<${caps(
+            file
+         )}/>\n\t</>\n\t<2>`;
+         let routeSlug = `<Route path="${cmpPath}/:slug">\n\t\t{#slot params}\n\t\t\t<${caps(
+            file
+         )} {params}/>\n\t\t{/slot}\n\t</>\n\t<2>`;
+         tpl = tpl.replace('<1>', declaration);
+         tpl = tpl.replace('<2>', routePage);
+         tpl = tpl.replace('<2>', routeSlug);
 
          traverseDir(searchPath);
       }
@@ -174,7 +169,6 @@ let watching;
 fs.watch(baseDir, { recursive: true }, (ev, f) => {
    if (watching) return;
    watching = true;
-   console.log(ev, f);
    if (
       (ev === 'rename' || ev === 'change') &&
       (!f.includes('.xht') || !f.includes('@'))

@@ -583,15 +583,15 @@
     }
   }, $base);
 
-  // src/routes/index.xht
-  var routes_default = ($element, $option = {}) => {
+  // src/routes/+page.xht
+  var page_default = ($element, $option = {}) => {
     {
       const $parentElement = $$htmlToFragmentClean(`<center> <h1> Homepage <p>About homepage</p> </h1> </center>`);
       $insertElementByOption($element, $option, $parentElement);
     }
   };
 
-  // src/routes/@modules/E404.xht
+  // src/modules/E404.xht
   var E404_default = ($element, $option = {}) => {
     {
       const $parentElement = $$htmlToFragmentClean(`<center> <h1>404</h1> <p>FILE NOT FOUND</p> </center>`);
@@ -618,8 +618,8 @@
     }
   }, $base);
 
-  // src/routes/about/+index.xht
-  var index_default = makeComponent(($option, $$apply) => {
+  // src/routes/about/+page.xht
+  var page_default2 = makeComponent(($option, $$apply) => {
     const $component = current_component;
     let $props = $option.props || {};
     const $context2 = $context;
@@ -629,7 +629,7 @@
     let slug;
     {
       let $cd = $component.$cd;
-      const $parentElement = $$htmlToFragmentClean(`<h2> About <sub>Content of About serve on /about/+index.xht.</sub> </h2> <br/> <>`);
+      const $parentElement = $$htmlToFragmentClean(`<h2> About <sub>Content of About serve on /about/+page.xht.</sub> </h2> <br/> <>`);
       let el1 = $parentElement[childNodes][4];
       $$ifBlock(
         $cd,
@@ -675,8 +675,8 @@
     }
   }, $base);
 
-  // src/routes/about/book/+index.xht
-  var index_default2 = makeComponent(($option, $$apply) => {
+  // src/routes/about/book/+page.xht
+  var page_default3 = makeComponent(($option, $$apply) => {
     const $component = current_component;
     let $props = $option.props || {};
     const $context2 = $context;
@@ -686,7 +686,7 @@
     let slug;
     {
       let $cd = $component.$cd;
-      const $parentElement = $$htmlToFragmentClean(`<h2> Book <sub>Content of Book serve on /about/book/+index.xht.</sub> </h2> <br/> <>`);
+      const $parentElement = $$htmlToFragmentClean(`<h2> Book <sub>Content of Book serve on /about/book/+page.xht.</sub> </h2> <br/> <>`);
       let el1 = $parentElement[childNodes][4];
       $$ifBlock(
         $cd,
@@ -736,7 +736,7 @@
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2) => {
               let $parentElement3 = $$htmlToFragmentClean(`<>`);
               let el0 = $parentElement3[firstChild];
-              callComponent($cd3, $context4, routes_default, el0, {});
+              callComponent($cd3, $context4, page_default, el0, {});
               return $parentElement3;
             });
             callComponent($cd2, $context3, Route_default, el1, { slots: slots2, props: { path: `/` } });
@@ -746,7 +746,7 @@
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2) => {
               let $parentElement3 = $$htmlToFragmentClean(`<>`);
               let el2 = $parentElement3[firstChild];
-              callComponent($cd3, $context4, index_default, el2, {});
+              callComponent($cd3, $context4, page_default2, el2, {});
               return $parentElement3;
             });
             callComponent($cd2, $context3, Route_default, el3, { slots: slots2, props: { path: `/about` } });
@@ -761,7 +761,7 @@
               callComponent(
                 $cd3,
                 $context4,
-                index_default,
+                page_default2,
                 el4,
                 {},
                 () => ({ params }),
@@ -776,7 +776,7 @@
             slots2.default = makeSlot($cd2, ($cd3, $context4, $instance_Route2) => {
               let $parentElement3 = $$htmlToFragmentClean(`<>`);
               let el6 = $parentElement3[firstChild];
-              callComponent($cd3, $context4, index_default2, el6, {});
+              callComponent($cd3, $context4, page_default3, el6, {});
               return $parentElement3;
             });
             callComponent($cd2, $context3, Route_default, el7, { slots: slots2, props: { path: `/about/book` } });
@@ -791,7 +791,7 @@
               callComponent(
                 $cd3,
                 $context4,
-                index_default2,
+                page_default3,
                 el8,
                 {},
                 () => ({ params }),

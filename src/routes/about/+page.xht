@@ -1,0 +1,17 @@
+<script>
+	export let params = {};
+	let slug;
+
+	$:params, slug = params.slug;
+</script>
+
+<h2> 
+	About
+	<sub>Content of About serve on /about/+page.xht.</>
+</>
+<br>
+
+
+{#if slug}
+	<Slug {slug} />
+{/if}
